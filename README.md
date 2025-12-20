@@ -87,54 +87,49 @@
 # Лабораторная работа 4
 ## Создаю генераторы, которые заполнят таблицы
 ### Генератор данных
-TRUNCATE TABLE
-    radaev_2262.Rentals,
-    radaev_2262.Insurances,
-    radaev_2262.Cars,
-    radaev_2262.Clients
-RESTART IDENTITY CASCADE;
 
+` ```sql `
+-- 1. Очистка таблиц и сброс счетчиков
+TRUNCATE TABLE radaev_2262.Rentals, radaev_2262.Insurances, radaev_2262.Cars, radaev_2262.Clients RESTART IDENTITY CASCADE;
+
+-- 2. Генерация Клиентов (Реальные ФИО и формат паспорта)
 INSERT INTO radaev_2262.Clients (full_name, passport)
 SELECT 
-    (ARRAY['Иванов','Смирнов','Кузнецов','Попов','Васильев','Петров',
-           'Соколов','Михайлов','Новиков','Федоров','Морозов','Волков',
-           'Алексеев','Лебедев','Семенов'])[floor(random()*15+1)]
+    (ARRAY['Иванов', 'Смирнов', 'Кузнецов', 'Попов', 'Васильев', 'Петров', 'Соколов', 'Михайлов', 'Новиков', 'Федоров'])[floor(random() * 10 + 1)]
     || ' ' ||
-    (ARRAY['Александр','Сергей','Дмитрий','Андрей','Алексей','Максим',
-           'Евгений','Иван','Михаил','Артем','Никита','Даниил',
-           'Илья','Егор','Матвей'])[floor(random()*15+1)]
+    (ARRAY['Александр', 'Сергей', 'Дмитрий', 'Андрей', 'Алексей', 'Максим', 'Евгений', 'Иван', 'Михаил', 'Артем'])[floor(random() * 10 + 1)]
     || ' ' ||
-    (ARRAY['Иванович','Петрович','Сергеевич','Андреевич','Алексеевич',
-           'Александрович','Дмитриевич','Максимович','Михайлович',
-           'Владимирович','Николаевич','Олегович','Юрьевич',
-           'Романович','Кириллович'])[floor(random()*15+1)],
-    (10+floor(random()*90))::TEXT || ' ' ||
-    (10+floor(random()*90))::TEXT || ' ' ||
-    (100000+floor(random()*900000))::TEXT
-FROM generate_series(1,20000);
+    (ARRAY['Иванович', 'Петрович', 'Сергеевич', 'Андреевич', 'Алексеевич', 'Александрович', 'Дмитриевич', 'Максимович', 'Михайлович', 'Владимирович'])[floor(random() * 10 + 1)],
+    
+    (10 + floor(random() * 90))::TEXT || ' ' || 
+    (10 + floor(random() * 90))::TEXT || ' ' || 
+    (100000 + floor(random() * 900000))::TEXT
+FROM generate_series(1, 20000);
 
+-- 3. Генерация Автомобилей (Реальные бренды и госномера)
 INSERT INTO radaev_2262.Cars (model, color, year, license_plate, current_daily_price)
 SELECT 
-    (ARRAY['Toyota Camry','Kia Rio','Hyundai Solaris','BMW X5','Lada Vesta',
-           'Skoda Octavia','Volkswagen Polo','Renault Logan','Mazda 6','Ford Focus'])[floor(random()*10+1)],
-    (ARRAY['Черный','Белый','Серебристый','Синий','Красный','Серый','Зеленый','Бежевый'])[floor(random()*8+1)],
-    2015 + floor(random()*9)::INT,
-    (ARRAY['А','В','Е','К','М','Н','О','Р','С','Т','У','Х'])[floor(random()*12+1)] ||
-    (100+floor(random()*899))::TEXT ||
-    (ARRAY['А','В','Е','К','М','Н','О','Р','С','Т','У','Х'])[floor(random()*12+1)] ||
-    (ARRAY['А','В','Е','К','М','Н','О','Р','С','Т','У','Х'])[floor(random()*12+1)] ||
+    (ARRAY['Toyota Camry', 'Kia Rio', 'Hyundai Solaris', 'BMW X5', 'Lada Vesta', 'Skoda Octavia', 'Volkswagen Polo', 'Renault Logan', 'Mazda 6', 'Ford Focus'])[floor(random() * 10 + 1)],
+    (ARRAY['Черный', 'Белый', 'Серебристый', 'Синий', 'Красный', 'Серый', 'Зеленый', 'Бежевый'])[floor(random() * 8 + 1)],
+    2015 + floor(random() * 9)::INT,
+    (ARRAY['А', 'В', 'Е', 'К', 'М', 'Н', 'О', 'Р', 'С', 'Т', 'У', 'Х'])[floor(random() * 12 + 1)] || 
+    (100 + floor(random() * 899))::TEXT || 
+    (ARRAY['А', 'В', 'Е', 'К', 'М', 'Н', 'О', 'Р', 'С', 'Т', 'У', 'Х'])[floor(random() * 12 + 1)] ||
+    (ARRAY['А', 'В', 'Е', 'К', 'М', 'Н', 'О', 'Р', 'С', 'Т', 'У', 'Х'])[floor(random() * 12 + 1)] || 
     '777',
-    (floor(random()*50)+15)*100
-FROM generate_series(1,20000);
+    (floor(random() * 50) + 15) * 100
+FROM generate_series(1, 20000) AS i;
 
+-- 4. Генерация Прокатов (50 000 записей)
 INSERT INTO radaev_2262.Rentals (client_id, car_id, start_date, days_count, price_at_rental)
 SELECT 
-    (floor(random()*20000)+1)::INT,
-    (floor(random()*20000)+1)::INT,
-    '2023-01-01'::DATE + (floor(random()*365))::INT,
-    (floor(random()*14)+1)::INT,
-    2000.00 + (floor(random()*30)*100)
-FROM generate_series(1,50000);
+    (floor(random() * 20000) + 1)::INT,
+    (floor(random() * 20000) + 1)::INT,
+    '2023-01-01'::DATE + (floor(random() * 365))::INT,
+    (floor(random() * 14) + 1)::INT,
+    2000.00 + (floor(random() * 30) * 100)
+FROM generate_series(1, 50000) AS s;
+` ``` `
 
 
 
