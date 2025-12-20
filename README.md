@@ -67,7 +67,68 @@
 ## Создание представлений
 ### Представление для отчета по прокатам
 ![..](jpges/lab3.1.png)
+проверяем
 ![Прокаты и расчеты](jpges/lab3.2.png)
 ### Представление для списка авто
+![Прокаты и расчеты](jpges/lab3.3.png)
+проверяем
+![Прокаты и расчеты](jpges/lab3.4.png)
 ## Процедуры
 ### Оформление проката
+![Прокаты и расчеты](jpges/lab3.5.png)
+проверяем, сдаем машину №1 клиенту №2 на 5 дней
+![Прокаты и расчеты](jpges/lab3.6.png)
+![Прокаты и расчеты](jpges/lab3.7.png)
+### Изменение цены авто
+![Прокаты и расчеты](jpges/lab3.8.png)
+меняем стоимость машины 1 на 9999 рублей
+![Прокаты и расчеты](jpges/lab3.9.png)
+![Прокаты и расчеты](jpges/lab3.10.png)
+# Лабораторная работа 4
+## Создаю генераторы, которые заполнят таблицы
+### Генератор данных
+` ```sql `
+TRUNCATE TABLE radaev_2262.Rentals, radaev_2262.Insurances, radaev_2262.Cars, radaev_2262.Clients RESTART IDENTITY CASCADE; -- чищу таблицу чтоб по новой заполнить всё
+
+
+INSERT INTO radaev_2262.Clients (full_name, passport)
+SELECT 
+    (ARRAY['Иванов', 'Смирнов', 'Кузнецов', 'Попов', 'Васильев', 'Петров', 'Соколов', 'Михайлов', 'Новиков', 'Федоров', 'Морозов', 'Волков', 'Алексеев', 'Лебедев', 'Семенов'])[floor(random() * 15 + 1)]
+    || ' ' ||
+    (ARRAY['Александр', 'Сергей', 'Дмитрий', 'Андрей', 'Алексей', 'Максим', 'Евгений', 'Иван', 'Михаил', 'Артем', 'Никита', 'Даниил', 'Илья', 'Егор', 'Матвей'])[floor(random() * 15 + 1)]
+    || ' ' ||
+    (ARRAY['Иванович', 'Петрович', 'Сергеевич', 'Андреевич', 'Алексеевич', 'Александрович', 'Дмитриевич', 'Максимович', 'Михайлович', 'Владимирович', 'Николаевич', 'Олегович', 'Юрьевич', 'Романович', 'Кириллович'])[floor(random() * 15 + 1)],
+    
+    (10 + floor(random() * 90))::TEXT || ' ' || 
+    (10 + floor(random() * 90))::TEXT || ' ' || 
+    (100000 + floor(random() * 900000))::TEXT
+FROM generate_series(1, 20000);
+
+INSERT INTO radaev_2262.Cars (model, color, year, license_plate, current_daily_price)
+SELECT 
+    (ARRAY['Toyota Camry', 'Kia Rio', 'Hyundai Solaris', 'BMW X5', 'Lada Vesta', 'Skoda Octavia', 'Volkswagen Polo', 'Renault Logan', 'Mazda 6', 'Ford Focus'])[floor(random() * 10 + 1)],
+    
+    (ARRAY['Черный', 'Белый', 'Серебристый', 'Синий', 'Красный', 'Серый', 'Зеленый', 'Бежевый'])[floor(random() * 8 + 1)],
+    
+    2015 + floor(random() * 9)::INT,
+    
+    (ARRAY['А', 'В', 'Е', 'К', 'М', 'Н', 'О', 'Р', 'С', 'Т', 'У', 'Х'])[floor(random() * 12 + 1)] || 
+    (100 + floor(random() * 899))::TEXT || 
+    (ARRAY['А', 'В', 'Е', 'К', 'М', 'Н', 'О', 'Р', 'С', 'Т', 'У', 'Х'])[floor(random() * 12 + 1)] ||
+    (ARRAY['А', 'В', 'Е', 'К', 'М', 'Н', 'О', 'Р', 'С', 'Т', 'У', 'Х'])[floor(random() * 12 + 1)] || 
+    '777',
+
+    (floor(random() * 50) + 15) * 100
+FROM generate_series(1, 20000) AS i;
+
+INSERT INTO radaev_2262.Rentals (client_id, car_id, start_date, days_count, price_at_rental)
+SELECT 
+    (floor(random() * 20000) + 1)::INT, 
+    (floor(random() * 20000) + 1)::INT,
+    '2023-01-01'::DATE + (floor(random() * 365))::INT, 
+    (floor(random() * 14) + 1)::INT,
+    2000.00 + (floor(random() * 30) * 100) 
+FROM generate_series(1, 50000) AS s;
+` ``` `
+
+
