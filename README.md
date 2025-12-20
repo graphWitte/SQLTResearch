@@ -52,9 +52,9 @@
 - - insurance_value — страховая стоимость автомобиля
 - - insurance_year — год страхования
 ## Физическая модель
-![Физическая модель](jpges/fizmod.PNG)
+![Физическая модель](jpges/fizmod.png)
 ## DDL Запросы
 ### Создаем таблицы
-![Orders](jpges/soz1.PNG)
+![Orders](jpges/soz1.png)
 ### Заполняем таблицы
-![Заполняем](jpges/zaptab.PNG)
+![Заполняем](jpges/zaptab.png)
