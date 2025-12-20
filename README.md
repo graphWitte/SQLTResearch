@@ -129,6 +129,6 @@ SELECT
     (floor(random() * 14) + 1)::INT,
     2000.00 + (floor(random() * 30) * 100) 
 FROM generate_series(1, 50000) AS s;
-` ``` `
+`  `
 
 
